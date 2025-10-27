@@ -138,6 +138,12 @@ makegpt/
 ├── .env.example                # Environment variables template
 ├── .gitignore                  # Git ignore patterns
 │
+├── agent_prompts/              # 🚀 QUICK START - No installation needed!
+│   ├── README.md              # Overview of agent prompts
+│   ├── QUICKSTART_HE.md       # Hebrew quick start (30 seconds)
+│   ├── HOW_TO_USE.md          # Detailed usage guide
+│   └── blueprint_generator_agent.md  # ⭐ Copy this to ChatGPT!
+│
 ├── src/                        # Core application code
 │   ├── __init__.py            # Main MakeGPT class & exports
 │   ├── main.py                # CLI entry point
@@ -148,7 +154,7 @@ makegpt/
 │   ├── make_api.py            # F5: Make.com API client
 │   └── schema_validator.py    # Schema validation (Table 2.1)
 │
-├── prompts/                    # LLM system prompts
+├── prompts/                    # LLM system prompts (for full system)
 │   ├── intent_prompt.txt      # Intent parsing instructions
 │   ├── plan_prompt.txt        # Scenario planning instructions
 │   └── synthesize_prompt.txt  # Blueprint synthesis instructions
@@ -174,6 +180,10 @@ makegpt/
 ```
 
 **Status**: ✅ **Fully Implemented** - All core components are functional
+
+**Two Ways to Use MakeGPT:**
+1. **⚡ Quick & Easy**: Use `agent_prompts/` - no installation, just copy to ChatGPT
+2. **🤖 Full Automation**: Use the Python system - requires setup but fully automated
 
 ---
 
@@ -210,7 +220,32 @@ cp .env.example .env
 
 ## 💻 Usage
 
-### Command Line Interface
+### ⚡ Option 1: Quick Start with Agent Prompts (Recommended for First Time)
+
+**No installation, no API keys, no Python - just copy & paste!**
+
+1. Open `agent_prompts/blueprint_generator_agent.md`
+2. Copy the entire content (Ctrl+A, Ctrl+C)
+3. Paste into ChatGPT (GPT-4) or Claude
+4. Ask: "Create a scenario that sends email when form is submitted"
+5. Copy the generated JSON and import to Make.com
+
+**📖 Quick Start Guide:** `agent_prompts/QUICKSTART_HE.md` (Hebrew)
+**📖 Detailed Guide:** `agent_prompts/HOW_TO_USE.md`
+
+This is perfect for:
+- Testing blueprints before automating
+- Learning Make.com schema structure
+- One-off scenario generation
+- No API costs (just ChatGPT Plus subscription)
+
+---
+
+### 🤖 Option 2: Full Automated System
+
+**For production use and full automation**
+
+#### Command Line Interface
 
 ```bash
 # Generate blueprint from natural language

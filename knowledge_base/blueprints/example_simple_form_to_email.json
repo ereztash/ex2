@@ -1,0 +1,56 @@
+{
+  "name": "Simple Form to Email Notification",
+  "flow": [
+    {
+      "id": 1,
+      "module": "google-forms:watchResponses",
+      "version": 1,
+      "parameters": {
+        "__IMTCONN__": 148576
+      },
+      "mapper": {},
+      "metadata": {
+        "designer": {
+          "x": 0,
+          "y": 0
+        },
+        "restore": {
+          "expect": {
+            "formId": {"mode": "chose"}
+          }
+        }
+      }
+    },
+    {
+      "id": 2,
+      "module": "gmail:sendEmail",
+      "version": 1,
+      "parameters": {
+        "__IMTCONN__": 234567
+      },
+      "mapper": {
+        "to": "{{1.respondentEmail}}",
+        "subject": "Thank you for your submission",
+        "text": "We received your form submission:\n\n{{1.answers}}"
+      },
+      "metadata": {
+        "designer": {
+          "x": 150,
+          "y": 0
+        }
+      }
+    }
+  ],
+  "metadata": {
+    "version": 1,
+    "scenario": {
+      "roundtrips": 1,
+      "maxErrors": 3,
+      "autoCommit": false,
+      "sequential": false,
+      "confidential": false,
+      "dataloss": false,
+      "dlq": false
+    }
+  }
+}

@@ -133,32 +133,47 @@ Authorization: Token <your-token>
 
 ```
 makegpt/
-├── README.md                 # This file
-├── requirements.txt          # Python dependencies
-├── .env.example             # Environment variables template
-├── src/
+├── README.md                    # Project documentation
+├── requirements.txt             # Python dependencies
+├── .env.example                # Environment variables template
+├── .gitignore                  # Git ignore patterns
+│
+├── src/                        # Core application code
+│   ├── __init__.py            # Main MakeGPT class & exports
+│   ├── main.py                # CLI entry point
+│   ├── intent_parser.py       # F1: Intent analysis (Stage 1)
+│   ├── planner.py             # F2: Scenario planning (Stage 2)
+│   ├── synthesizer.py         # F3: Blueprint synthesis (Stage 3)
+│   ├── encoder.py             # F4: Base64 encoding (critical!)
+│   ├── make_api.py            # F5: Make.com API client
+│   └── schema_validator.py    # Schema validation (Table 2.1)
+│
+├── prompts/                    # LLM system prompts
+│   ├── intent_prompt.txt      # Intent parsing instructions
+│   ├── plan_prompt.txt        # Scenario planning instructions
+│   └── synthesize_prompt.txt  # Blueprint synthesis instructions
+│
+├── schemas/                    # JSON Schema definitions
+│   └── blueprint_schema_2.1.json  # Reverse-engineered Make.com schema
+│
+├── knowledge_base/             # RAG training data
+│   ├── README.md
+│   └── blueprints/
+│       ├── example_simple_form_to_email.json
+│       ├── example_conditional_router.json
+│       └── example_with_error_handling.json
+│
+├── tests/                      # Test suite
 │   ├── __init__.py
-│   ├── intent_parser.py     # F1: Intent analysis
-│   ├── planner.py           # F2: Scenario planning
-│   ├── synthesizer.py       # F3: Blueprint synthesis
-│   ├── encoder.py           # F4: Base64 encoding
-│   ├── make_api.py          # F5: Make.com API client
-│   └── schema_validator.py  # Schema validation
-├── prompts/
-│   ├── intent_prompt.txt
-│   ├── plan_prompt.txt
-│   └── synthesize_prompt.txt
-├── schemas/
-│   └── blueprint_schema_2.1.json
-├── knowledge_base/
-│   └── blueprints/          # Sample blueprints for RAG
-├── tests/
-│   ├── test_intent.py
-│   ├── test_planner.py
-│   └── test_synthesizer.py
-└── examples/
+│   ├── test_encoder.py        # Base64 encoding tests
+│   └── test_validator.py      # Schema validation tests
+│
+└── examples/                   # Sample outputs
     └── sample_blueprints/
+        └── README.md
 ```
+
+**Status**: ✅ **Fully Implemented** - All core components are functional
 
 ---
 
@@ -290,17 +305,79 @@ MakeGPT generates blueprints compliant with Make.com JSON Schema 2.1:
 
 ---
 
+## 🏗️ Implementation Architecture
+
+### The Compiler Analogy
+
+MakeGPT is designed as a **compiler**, not just a JSON generator:
+
+```
+Source Code  →  Lexer/Parser  →  AST Generator  →  Code Gen  →  Object File  →  Linker
+     ↓              ↓                 ↓              ↓             ↓            ↓
+Natural      Intent           Scenario         Blueprint    Unlinked       User
+Language     Parser           Planner          Synthesizer  Scenario       (HIL)
+```
+
+**Components**:
+- **Lexer/Parser** (`intent_parser.py`): Tokenizes natural language into structured intent
+- **AST Generator** (`planner.py`): Creates abstract scenario plan (execution graph)
+- **Code Generator** (`synthesizer.py`): Compiles AST to blueprint.json (DSL)
+- **Object File**: Valid but unlinked blueprint (contains `__IMTCONN__` placeholders)
+- **Linker**: Human user manually connects accounts in Make.com UI
+
+### Critical Implementation Details
+
+**1. Base64 Encoding Protocol** (Section 4.2 of spec)
+```python
+# This is REQUIRED - not documented officially but essential
+blueprint_b64 = Base64Encoder.encode(blueprint_dict)
+# Bypasses all JSON escaping issues
+```
+
+**2. Schema Compliance** (Table 2.1 of spec)
+- Reverse-engineered from community research
+- Every module MUST have: `id`, `module`, `version`, `metadata.designer`
+- Root MUST have: `name`, `flow`, `metadata.scenario`
+- Validated before API transmission
+
+**3. Human-in-the-Loop (HIL)** Architecture
+- `__IMTCONN__` placeholders cannot be resolved programmatically
+- Security feature, not a bug
+- User must manually link connections in Make.com UI
+- This is an intentional design constraint
+
+### Theoretical Foundation
+
+Based on the comprehensive architecture specification document, this implementation follows:
+
+**SYNTHOS_∞.Π | ATAOV± Framework**:
+- **P-collapse**: Blueprint → Scenario (potential → instantiated)
+- **Δ-Engine**: Gap detection and knowledge discovery
+- **ATAOV±**: Generate-and-refute validation loops
+- **DSL Recognition**: blueprint.json as domain-specific language
+
+**Key Insights**:
+1. Blueprint is not just data - it's executable code (DSL)
+2. Community knowledge > official docs (Base64 discovery)
+3. Security constraints shape architecture (HIL requirement)
+4. Feedback loops enable continuous improvement (Section 7.3)
+
+---
+
 ## 🗺️ Roadmap
 
 - [x] Core architecture design
-- [x] SRS documentation
-- [ ] Intent parser implementation
-- [ ] Scenario planner
-- [ ] Blueprint synthesizer
-- [ ] Schema validator
-- [ ] Make.com API integration
-- [ ] CLI interface
-- [ ] RAG knowledge base
+- [x] SRS documentation (based on comprehensive spec)
+- [x] Intent parser implementation
+- [x] Scenario planner
+- [x] Blueprint synthesizer
+- [x] Schema validator
+- [x] Make.com API integration (with Base64 encoding)
+- [x] CLI interface
+- [x] RAG knowledge base (example blueprints)
+- [x] Formal JSON Schema 2.1 (reverse-engineered)
+- [x] Test suite (validator, encoder)
+- [ ] RAG retrieval integration (future enhancement)
 - [ ] Web UI (stretch goal)
 - [ ] VSCode extension (future)
 

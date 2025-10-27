@@ -1,0 +1,92 @@
+{
+  "name": "HTTP Request with Error Handling",
+  "flow": [
+    {
+      "id": 1,
+      "module": "http:webhookEvent",
+      "version": 1,
+      "parameters": {
+        "__IMTHOOK__": 987654
+      },
+      "mapper": {},
+      "metadata": {
+        "designer": {
+          "x": 0,
+          "y": 0
+        }
+      }
+    },
+    {
+      "id": 2,
+      "module": "http:MakeARequest",
+      "version": 1,
+      "parameters": {
+        "handleErrors": true
+      },
+      "mapper": {
+        "url": "https://api.example.com/process",
+        "method": "POST",
+        "body": "{{1.data}}"
+      },
+      "metadata": {
+        "designer": {
+          "x": 150,
+          "y": 0
+        }
+      },
+      "onerror": [
+        {
+          "id": 3,
+          "module": "Break",
+          "version": 1,
+          "parameters": {},
+          "mapper": {
+            "retry": "true",
+            "maxAttempts": "3",
+            "interval": "60",
+            "backoff": "exponential"
+          },
+          "metadata": {
+            "designer": {
+              "x": 150,
+              "y": 150
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": 4,
+      "module": "google-sheets:addRow",
+      "version": 1,
+      "parameters": {
+        "__IMTCONN__": 567890
+      },
+      "mapper": {
+        "values": {
+          "timestamp": "{{formatDate(now; \"YYYY-MM-DD HH:mm:ss\")}}",
+          "status": "{{2.status}}",
+          "response": "{{2.data}}"
+        }
+      },
+      "metadata": {
+        "designer": {
+          "x": 300,
+          "y": 0
+        }
+      }
+    }
+  ],
+  "metadata": {
+    "version": 1,
+    "scenario": {
+      "roundtrips": 1,
+      "maxErrors": 3,
+      "autoCommit": false,
+      "sequential": true,
+      "confidential": false,
+      "dataloss": false,
+      "dlq": false
+    }
+  }
+}

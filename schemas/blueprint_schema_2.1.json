@@ -1,0 +1,188 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://makegpt.dev/schemas/blueprint-2.1.json",
+  "title": "Make.com Blueprint Schema 2.1",
+  "description": "Reverse-engineered schema for Make.com blueprint.json files (unofficial)",
+  "type": "object",
+  "required": ["name", "flow", "metadata"],
+  "properties": {
+    "name": {
+      "type": "string",
+      "description": "Scenario name as displayed in Make.com UI"
+    },
+    "flow": {
+      "type": "array",
+      "description": "Array of modules (nodes) in the scenario DAG",
+      "minItems": 1,
+      "items": {
+        "$ref": "#/definitions/module"
+      }
+    },
+    "metadata": {
+      "type": "object",
+      "required": ["scenario"],
+      "properties": {
+        "version": {
+          "type": "integer",
+          "default": 1
+        },
+        "scenario": {
+          "$ref": "#/definitions/scenarioMetadata"
+        }
+      }
+    }
+  },
+  "definitions": {
+    "module": {
+      "type": "object",
+      "required": ["id", "module", "version", "metadata"],
+      "properties": {
+        "id": {
+          "type": "integer",
+          "description": "Unique module identifier within the scenario"
+        },
+        "module": {
+          "type": "string",
+          "description": "Make.com module name (e.g., 'google-forms:watchResponses')"
+        },
+        "version": {
+          "type": "integer",
+          "description": "Module version (usually 1)"
+        },
+        "parameters": {
+          "type": "object",
+          "description": "Module-specific parameters, including __IMTCONN__ and __IMTHOOK__ placeholders"
+        },
+        "mapper": {
+          "type": "object",
+          "description": "Data mapping from previous modules using {{moduleId.field}} syntax"
+        },
+        "metadata": {
+          "type": "object",
+          "required": ["designer"],
+          "properties": {
+            "designer": {
+              "type": "object",
+              "required": ["x", "y"],
+              "properties": {
+                "x": {"type": "integer"},
+                "y": {"type": "integer"}
+              }
+            },
+            "restore": {"type": "object"},
+            "expect": {"type": "array"}
+          }
+        },
+        "filter": {
+          "$ref": "#/definitions/filter"
+        },
+        "routes": {
+          "type": "array",
+          "description": "Routes for BasicRouter modules",
+          "items": {
+            "$ref": "#/definitions/route"
+          }
+        },
+        "onerror": {
+          "type": "array",
+          "description": "Error handling modules",
+          "items": {
+            "$ref": "#/definitions/module"
+          }
+        }
+      }
+    },
+    "scenarioMetadata": {
+      "type": "object",
+      "required": ["roundtrips", "maxErrors", "autoCommit", "sequential"],
+      "properties": {
+        "roundtrips": {
+          "type": "integer",
+          "description": "Number of execution rounds",
+          "default": 1
+        },
+        "maxErrors": {
+          "type": "integer",
+          "description": "Maximum consecutive errors before stopping",
+          "default": 3
+        },
+        "autoCommit": {
+          "type": "boolean",
+          "description": "Whether to automatically commit changes",
+          "default": false
+        },
+        "sequential": {
+          "type": "boolean",
+          "description": "Force sequential execution (true for critical operations)",
+          "default": false
+        },
+        "confidential": {
+          "type": "boolean",
+          "default": false
+        },
+        "dataloss": {
+          "type": "boolean",
+          "default": false
+        },
+        "dlq": {
+          "type": "boolean",
+          "description": "Dead letter queue",
+          "default": false
+        }
+      }
+    },
+    "filter": {
+      "type": "object",
+      "required": ["name", "conditions"],
+      "properties": {
+        "name": {
+          "type": "string",
+          "description": "Filter name"
+        },
+        "conditions": {
+          "type": "array",
+          "description": "Array of condition groups (OR logic between groups)",
+          "items": {
+            "type": "array",
+            "description": "Array of conditions (AND logic within group)",
+            "items": {
+              "$ref": "#/definitions/condition"
+            }
+          }
+        }
+      }
+    },
+    "condition": {
+      "type": "object",
+      "required": ["a", "b", "o"],
+      "properties": {
+        "a": {
+          "description": "First value (can use {{moduleId.field}} syntax)"
+        },
+        "b": {
+          "description": "Second value for comparison"
+        },
+        "o": {
+          "type": "string",
+          "description": "Operator (e.g., 'text:equal', 'number:greater', 'exists')"
+        }
+      }
+    },
+    "route": {
+      "type": "object",
+      "required": ["flow"],
+      "properties": {
+        "flow": {
+          "type": "array",
+          "description": "Modules in this route",
+          "items": {
+            "$ref": "#/definitions/module"
+          }
+        },
+        "filter": {
+          "$ref": "#/definitions/filter"
+        }
+      }
+    }
+  }
+}

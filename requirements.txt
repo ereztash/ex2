@@ -1,0 +1,25 @@
+# MakeGPT Dependencies
+
+# Core AI/ML
+openai>=1.0.0                 # OpenAI API for LLM operations
+python-dotenv>=1.0.0         # Environment variable management
+
+# HTTP and API
+requests>=2.31.0             # HTTP client for Make.com API
+
+# Data handling
+pydantic>=2.0.0              # Data validation (optional, for future enhancements)
+
+# Testing
+pytest>=7.4.0                # Testing framework
+pytest-cov>=4.1.0            # Coverage reporting
+pytest-mock>=3.11.0          # Mocking for tests
+
+# Development
+black>=23.0.0                # Code formatting
+flake8>=6.0.0                # Linting
+mypy>=1.5.0                  # Type checking
+
+# Documentation (optional)
+mkdocs>=1.5.0                # Documentation site generator
+mkdocs-material>=9.0.0       # Material theme for docs

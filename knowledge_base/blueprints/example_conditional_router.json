@@ -1,0 +1,110 @@
+{
+  "name": "Conditional Routing Example",
+  "flow": [
+    {
+      "id": 1,
+      "module": "google-sheets:watchUpdatedCells",
+      "version": 1,
+      "parameters": {
+        "__IMTCONN__": 145678
+      },
+      "mapper": {},
+      "metadata": {
+        "designer": {
+          "x": 0,
+          "y": 0
+        }
+      }
+    },
+    {
+      "id": 2,
+      "module": "builtin:BasicRouter",
+      "version": 1,
+      "mapper": {},
+      "metadata": {
+        "designer": {
+          "x": 150,
+          "y": 0
+        }
+      },
+      "routes": [
+        {
+          "flow": [
+            {
+              "id": 3,
+              "module": "google-calendar:createEvent",
+              "version": 1,
+              "parameters": {
+                "__IMTCONN__": 234789
+              },
+              "mapper": {
+                "summary": "Urgent: {{1.rowValues.`0`}}",
+                "start": "{{1.rowValues.`2`}}"
+              },
+              "metadata": {
+                "designer": {
+                  "x": 300,
+                  "y": -75
+                }
+              }
+            }
+          ],
+          "filter": {
+            "name": "Urgent Priority",
+            "conditions": [[
+              {
+                "a": "{{1.rowValues.`1`}}",
+                "b": "urgent",
+                "o": "text:equal:ci"
+              }
+            ]]
+          }
+        },
+        {
+          "flow": [
+            {
+              "id": 4,
+              "module": "slack:sendMessage",
+              "version": 1,
+              "parameters": {
+                "__IMTCONN__": 345890
+              },
+              "mapper": {
+                "channel": "general",
+                "text": "Normal priority task: {{1.rowValues.`0`}}"
+              },
+              "metadata": {
+                "designer": {
+                  "x": 300,
+                  "y": 75
+                }
+              }
+            }
+          ],
+          "filter": {
+            "name": "Normal Priority",
+            "conditions": [[
+              {
+                "a": "{{1.rowValues.`1`}}",
+                "b": "normal",
+                "o": "text:equal:ci"
+              }
+            ]]
+          }
+        }
+      ]
+    }
+  ],
+  "metadata": {
+    "version": 1,
+    "scenario": {
+      "roundtrips": 1,
+      "maxErrors": 3,
+      "autoCommit": false,
+      "sequential": false,
+      "confidential": false,
+      "dataloss": false,
+      "dlq": false
+    }
+  }
+}
